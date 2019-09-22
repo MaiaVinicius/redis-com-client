@@ -12,10 +12,10 @@ namespace redis_com_client
             
         }
 
-        public static IDatabase GetInstance()
+        public static IDatabase GetInstance(string hostname)
         {
             if (_redisClientsManager == null)
-                _redisClientsManager = ConnectionMultiplexer.Connect("localhost");
+                _redisClientsManager = ConnectionMultiplexer.Connect(hostname);
 
             return _redisClientsManager.GetDatabase();
         }

@@ -14,26 +14,29 @@ namespace redis_com_client
     public class CacheManager : ICacheManager
     {
         private string _storePrefix;
+        private IDatabase _redisinstance;
 
-        public CacheManager()
+
+        public CacheManager(string hostname)
         {
+            _redisinstance = CacheFactory.GetInstance(hostname);
         }
 
         public void SetExpiration(string key, int milliseconds)
         {
-            CacheFactory.GetInstance().KeyExpire(GenerateFullKey(key), TimeSpan.FromMilliseconds(milliseconds));
+            _redisinstance.KeyExpire(GenerateFullKey(key), TimeSpan.FromMilliseconds(milliseconds));
         }
 
         public void RemoveAll()
         {
             var mask = $"{_storePrefix}*";
-            CacheFactory.GetInstance().ScriptEvaluate("local keys = redis.call('keys', ARGV[1]) for i=1,#keys,5000 do redis.call('del', unpack(keys, i, math.min(i+4999, #keys))) end return keys", null, new RedisValue[] { mask });
+            _redisinstance.ScriptEvaluate("local keys = redis.call('keys', ARGV[1]) for i=1,#keys,5000 do redis.call('del', unpack(keys, i, math.min(i+4999, #keys))) end return keys", null, new RedisValue[] { mask });
         }
 
         public object Get(string key)
         {
             var fullKey = GenerateFullKey(key);
-            string pair = CacheFactory.GetInstance().StringGet(fullKey);
+            string pair = _redisinstance.StringGet(fullKey);
 
             if (string.IsNullOrEmpty(pair))
                 return null;
@@ -88,11 +91,11 @@ namespace redis_com_client
 
             if (millisecondsToExpire > 0)
             {
-                CacheFactory.GetInstance().StringSet(fullKey, (string)valueToAdd, TimeSpan.FromMilliseconds(millisecondsToExpire));
+                _redisinstance.StringSet(fullKey, (string)valueToAdd, TimeSpan.FromMilliseconds(millisecondsToExpire));
             }
             else
             {
-                CacheFactory.GetInstance().StringSet(fullKey, (string)valueToAdd);
+                _redisinstance.StringSet(fullKey, (string)valueToAdd);
             }
         }
 
@@ -117,12 +120,12 @@ namespace redis_com_client
 
         public void Remove(string key)
         {
-            CacheFactory.GetInstance().KeyDelete(GenerateFullKey(key));
+            _redisinstance.KeyDelete(GenerateFullKey(key));
         }
 
         public bool Exists(string key)
         {
-            return CacheFactory.GetInstance().KeyExists(GenerateFullKey(key));
+            return _redisinstance.KeyExists(GenerateFullKey(key));
         }
     }
 }

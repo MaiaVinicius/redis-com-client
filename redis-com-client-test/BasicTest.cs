@@ -17,7 +17,7 @@ namespace redis_com_client_test
         [TestInitialize]
         public void Initialize()
         {
-            _manager = new CacheManager();
+            _manager = new CacheManager(hostname:"localhost");
             _manager.Init("test1");
         }
 
@@ -94,7 +94,7 @@ namespace redis_com_client_test
         [TestMethod]
         public void RemoveAllFromThisKey()
         {
-            var manager2 = new CacheManager();
+            var manager2 = new CacheManager(hostname: "localhost");
             manager2.Init("test2");
             manager2.Add("firstname", "22222");
             manager2.Add("lastname", "33333");
