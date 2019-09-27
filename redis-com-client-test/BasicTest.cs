@@ -94,17 +94,17 @@ namespace redis_com_client_test
         public void RemoveAllFromThisKey()
         {
             var manager2 = new CacheManager(hostname: "localhost");
-            manager2.Add("firstname", "22222");
-            manager2.Add("lastname", "33333");
+            manager2.Add("myPrefix2:firstname", "22222");
+            manager2.Add("myPrefix2:lastname", "33333");
 
-            _manager.Add("firstname", "firstname123");
-            _manager.Add("lastname", "lastname123");
-            _manager.RemoveAll("");
+            _manager.Add("myPrefix:firstname", "firstname123");
+            _manager.Add("myPrefix:lastname", "lastname123");
+            _manager.RemoveAll("myPrefix:");
 
-            Assert.IsNull(_manager["firstname"]);
-            Assert.IsNull(_manager["lastname"]);
-            Assert.IsNotNull(manager2["firstname"]);
-            Assert.IsNotNull(manager2["lastname"]);
+            Assert.IsNull(_manager["myPrefix:firstname"]);
+            Assert.IsNull(_manager["myPrefix:lastname"]);
+            Assert.IsNotNull(manager2["myPrefix2:firstname"]);
+            Assert.IsNotNull(manager2["myPrefix2:lastname"]);
         }
 
         [TestMethod]
