@@ -13,9 +13,7 @@ namespace redis_com_client
     [Synchronization(SynchronizationOption.Disabled)]
     public class CacheManager : ICacheManager
     {
-        private string _storePrefix;
         private IDatabase _redisinstance;
-
 
         public CacheManager(string hostname)
         {
@@ -24,18 +22,18 @@ namespace redis_com_client
 
         public void SetExpiration(string key, int milliseconds)
         {
-            _redisinstance.KeyExpire(GenerateFullKey(key), TimeSpan.FromMilliseconds(milliseconds));
+            _redisinstance.KeyExpire(key, TimeSpan.FromMilliseconds(milliseconds));
         }
 
-        public void RemoveAll()
+        public void RemoveAll(string prefix)
         {
-            var mask = $"{_storePrefix}*";
+            var mask = $"{prefix}*";
             _redisinstance.ScriptEvaluate("local keys = redis.call('keys', ARGV[1]) for i=1,#keys,5000 do redis.call('del', unpack(keys, i, math.min(i+4999, #keys))) end return keys", null, new RedisValue[] { mask });
         }
 
         public object Get(string key)
         {
-            var fullKey = GenerateFullKey(key);
+            var fullKey = key;
             string pair = _redisinstance.StringGet(fullKey);
 
             if (string.IsNullOrEmpty(pair))
@@ -62,7 +60,6 @@ namespace redis_com_client
         private void Add(string key, object value, int millisecondsToExpire)
         {
             object valueToAdd = value?.ToString() ?? string.Empty;
-            var fullKey = GenerateFullKey(key);
 
             if (value != null && value.GetType().IsArray)
             {
@@ -91,11 +88,11 @@ namespace redis_com_client
 
             if (millisecondsToExpire > 0)
             {
-                _redisinstance.StringSet(fullKey, (string)valueToAdd, TimeSpan.FromMilliseconds(millisecondsToExpire));
+                _redisinstance.StringSet(key, (string)valueToAdd, TimeSpan.FromMilliseconds(millisecondsToExpire));
             }
             else
             {
-                _redisinstance.StringSet(fullKey, (string)valueToAdd);
+                _redisinstance.StringSet(key, (string)valueToAdd);
             }
         }
 
@@ -105,27 +102,14 @@ namespace redis_com_client
             set { Add(key, value); }
         }
 
-        public void Init(string cacheId)
-        {
-            _storePrefix = string.Concat(cacheId, ":");
-        }
-
-        private string GenerateFullKey(string key)
-        {
-            if (string.IsNullOrEmpty(_storePrefix))
-                throw new Exception("no cache key defined - operation not allowed.");
-
-            return (string.Concat(_storePrefix, key));
-        }
-
         public void Remove(string key)
         {
-            _redisinstance.KeyDelete(GenerateFullKey(key));
+            _redisinstance.KeyDelete(key);
         }
 
         public bool Exists(string key)
         {
-            return _redisinstance.KeyExists(GenerateFullKey(key));
+            return _redisinstance.KeyExists(key);
         }
     }
 }

@@ -18,7 +18,6 @@ namespace redis_com_client_test
         public void Initialize()
         {
             _manager = new CacheManager(hostname:"localhost");
-            _manager.Init("test1");
         }
 
 
@@ -95,13 +94,12 @@ namespace redis_com_client_test
         public void RemoveAllFromThisKey()
         {
             var manager2 = new CacheManager(hostname: "localhost");
-            manager2.Init("test2");
             manager2.Add("firstname", "22222");
             manager2.Add("lastname", "33333");
 
             _manager.Add("firstname", "firstname123");
             _manager.Add("lastname", "lastname123");
-            _manager.RemoveAll();
+            _manager.RemoveAll("");
 
             Assert.IsNull(_manager["firstname"]);
             Assert.IsNull(_manager["lastname"]);

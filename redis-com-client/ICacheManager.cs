@@ -9,9 +9,8 @@ namespace redis_com_client
     {
         void Add(string key, object value);
         object Get(string key);
-        void RemoveAll();
+        void RemoveAll(string prefix);
         object this[string key] { get; set; }
-        void Init(string cacheId);
 		void Remove(string key);
         bool Exists(string key);
         void SetExpiration(string key, int milliseconds);
