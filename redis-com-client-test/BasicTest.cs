@@ -42,6 +42,15 @@ namespace redis_com_client_test
         //}
 
         [TestMethod]
+        public void CheckTTL()
+        {
+            _manager.Add("dk", "123");
+            _manager.Expire("dk", 10);
+            int timetolive = _manager.TTL("dk");
+            Assert.IsTrue(timetolive >= 5 && timetolive <= 10);
+        }
+
+        [TestMethod]
         public void GetByObject()
         {
             _manager.Add("dk", "123");
@@ -124,7 +133,7 @@ namespace redis_com_client_test
         public void Remove()
         {
             _manager.Add("onekey", "12344");
-            _manager.Remove("onekey");
+            _manager.Del("onekey");
             Assert.IsFalse(_manager.Exists("onekey"));
         }
 

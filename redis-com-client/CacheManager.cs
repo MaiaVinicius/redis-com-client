@@ -20,6 +20,36 @@ namespace redis_com_client
             _redisinstance = CacheFactory.GetInstance(hostname);
         }
 
+        public void Del(string key)
+        {
+            _redisinstance.KeyDelete(key);
+        }
+        public bool Exists(string key)
+        {
+            return _redisinstance.KeyExists(key);
+        }
+        public void ExpireAt(string key, DateTime ExpireDatetime)
+        {
+            _redisinstance.KeyExpire(key, ExpireDatetime);
+        }
+        public void Expire(string key, int seconds)
+        {
+            DateTime ExpireDatetime = DateTime.Now.AddSeconds(seconds);
+            ExpireAt(key, ExpireDatetime);
+        }
+        public int TTL(string key)
+        {
+            // TODO: check if 'Value' is the best way to handle nullable timespans - because it probably isn't
+            TimeSpan interval = _redisinstance.KeyTimeToLive(key).Value;
+            if (interval != null)
+            {
+                return Convert.ToInt32(interval.TotalSeconds);
+            }
+            else {
+                return -1;
+            }
+        }
+
         public void SetExpiration(string key, int milliseconds)
         {
             _redisinstance.KeyExpire(key, TimeSpan.FromMilliseconds(milliseconds));
@@ -102,14 +132,7 @@ namespace redis_com_client
             set { Add(key, value); }
         }
 
-        public void Remove(string key)
-        {
-            _redisinstance.KeyDelete(key);
-        }
 
-        public bool Exists(string key)
-        {
-            return _redisinstance.KeyExists(key);
-        }
+
     }
 }

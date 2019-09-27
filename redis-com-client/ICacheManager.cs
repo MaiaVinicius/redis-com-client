@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 
 namespace redis_com_client
 {
@@ -7,12 +8,18 @@ namespace redis_com_client
     [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
     public interface ICacheManager
     {
+        void Del(string key);
+        bool Exists(string key);
+        void ExpireAt(string key, DateTime ExpireDatetime);
+        void Expire(string key, int seconds);
+        int TTL(string key);
+
         void Add(string key, object value);
         object Get(string key);
         void RemoveAll(string prefix);
         object this[string key] { get; set; }
-		void Remove(string key);
-        bool Exists(string key);
+
+
         void SetExpiration(string key, int milliseconds);
     }
 }
