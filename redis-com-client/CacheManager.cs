@@ -39,16 +39,99 @@ namespace redis_com_client
         }
         public int TTL(string key)
         {
-            // TODO: check if 'Value' is the best way to handle nullable timespans - because it probably isn't
-            TimeSpan interval = _redisinstance.KeyTimeToLive(key).Value;
-            if (interval != null)
+            TimeSpan? interval = _redisinstance.KeyTimeToLive(key);
+            if (interval.HasValue) return Convert.ToInt32(interval.Value.TotalSeconds);
+            return -1;
+        }
+
+        public object Get(string key)
+        {
+            string pair = _redisinstance.StringGet(key);
+
+            if (string.IsNullOrEmpty(pair))
+                return null;
+
+            if (!pair.Contains("ArrayCollumn"))
+                return pair;
+
+            var table = JsonConvert.DeserializeObject<MyTable>(pair);
+            try
             {
-                return Convert.ToInt32(interval.TotalSeconds);
+                return (object[,])table.GetArray();
             }
-            else {
-                return -1;
+            catch (Exception)
+            {
+                return (object[])table.GetArray();
             }
         }
+
+        public void Set(string key, object value, int SecondsToExpire)
+        {
+            object valueToAdd = value?.ToString() ?? string.Empty;
+
+            if (value != null && value.GetType().IsArray)
+            {
+                try
+                {
+                    var array = (object[,])value;
+                    var table = new MyTable(array);
+                    valueToAdd = JsonConvert.SerializeObject(table);
+                }
+                catch (Exception ex)
+                {
+                    if (ex.Message.IndexOf("cast object", StringComparison.InvariantCultureIgnoreCase) > 0) //most likely the array is not bi-dimensional, try again with only 1 dimenion
+                    {
+                        var array = (object[])value;
+                        var table = new MyTable(array);
+                        valueToAdd = JsonConvert.SerializeObject(table);
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+
+            if (SecondsToExpire > 0)
+            {
+                _redisinstance.StringSet(key, (string)valueToAdd, TimeSpan.FromSeconds(SecondsToExpire));
+            }
+            else
+            {
+                _redisinstance.StringSet(key, (string)valueToAdd);
+            }
+        }
+
+        public void SetPermanent(string key, object value)
+        {
+            Set(key, value, 0);
+        }
+
+        public void Persist(string key)
+        {
+            _redisinstance.KeyPersist(key);
+        }
+
+        public string Type(string key)
+        {
+            return _redisinstance.KeyType(key).ToString();
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         public void SetExpiration(string key, int milliseconds)
         {
@@ -61,75 +144,13 @@ namespace redis_com_client
             _redisinstance.ScriptEvaluate("local keys = redis.call('keys', ARGV[1]) for i=1,#keys,5000 do redis.call('del', unpack(keys, i, math.min(i+4999, #keys))) end return keys", null, new RedisValue[] { mask });
         }
 
-        public object Get(string key)
-        {
-            var fullKey = key;
-            string pair = _redisinstance.StringGet(fullKey);
-
-            if (string.IsNullOrEmpty(pair))
-                return null;
-
-            if (!pair.Contains("ArrayCollumn"))
-                return pair;
-                
-            var table = JsonConvert.DeserializeObject<MyTable>(pair);
-            try { 
-                return (object[,])table.GetArray();
-            }
-            catch (Exception) { 
-                return (object[])table.GetArray();
-            }
-        }
 
 
-        public void Add(string key, object value)
-        {
-            Add(key, value, 0);
-        }
-
-        private void Add(string key, object value, int millisecondsToExpire)
-        {
-            object valueToAdd = value?.ToString() ?? string.Empty;
-
-            if (value != null && value.GetType().IsArray)
-            {
-                try
-                {
-                    var array = (object[,])value;
-
-                    var table = new MyTable(array);
-                    valueToAdd = JsonConvert.SerializeObject(table);
-                }
-                catch (Exception ex)
-                {
-                    if (ex.Message.IndexOf("cast object", StringComparison.InvariantCultureIgnoreCase) > 0) //most likely the array is not bi-dimensional, try again with only 1 dimenion
-                    {
-                        var array = (object[])value;
-
-                        var table = new MyTable(array);
-                        valueToAdd = JsonConvert.SerializeObject(table);
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-            }
-
-            if (millisecondsToExpire > 0)
-            {
-                _redisinstance.StringSet(key, (string)valueToAdd, TimeSpan.FromMilliseconds(millisecondsToExpire));
-            }
-            else
-            {
-                _redisinstance.StringSet(key, (string)valueToAdd);
-            }
-        }
 
         public object this[string key]
         {
             get { return Get(key); }
-            set { Add(key, value); }
+            set { SetPermanent(key, value); }
         }
 
 

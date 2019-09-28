@@ -14,8 +14,27 @@ namespace redis_com_client
         void Expire(string key, int seconds);
         int TTL(string key);
 
-        void Add(string key, object value);
         object Get(string key);
+        void Set(string key, object value, int SecondsToExpire);
+        void SetPermanent(string key, object value);
+        void Persist(string key);
+        string Type(string key);
+
+        /*
+        int decr(string key);
+        int decrby(string key, int decrement);
+        int incr(string key);
+        int incrby(string key, int increment);
+
+        void hdel(string key, string field);
+        bool hexists(string key, string field);
+        object hget(string key, string field);
+        object hgetall(string key);
+        int hlen(string key);
+        void hset(string key, string field, object value);
+        String[] hkeys(string key);
+        Object[] hvals(string key);
+        */
         void RemoveAll(string prefix);
         object this[string key] { get; set; }
 

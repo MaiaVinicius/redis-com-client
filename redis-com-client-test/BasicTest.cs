@@ -22,11 +22,36 @@ namespace redis_com_client_test
 
 
         [TestMethod]
-        public void Add()
+        public void test_SetPermanent_and_Get()
         {
-            _manager.Add("key1", "abcde");
-
+            _manager.SetPermanent("key1", "abcde");
             Assert.AreEqual("abcde", _manager.Get("key1"));
+        }
+
+        [TestMethod]
+        public void test_Del()
+        {
+            _manager.SetPermanent("key1", "abcde");
+            _manager.Del("key1");
+            Assert.IsNull(_manager.Get("key1"));
+        }
+
+        [TestMethod]
+        public void CheckTTL()
+        {
+            _manager.SetPermanent("dk", "123");
+            _manager.Expire("dk", 10);
+            int timetolive = _manager.TTL("dk");
+            Assert.IsTrue(timetolive >= 5 && timetolive <= 10);
+        }
+
+        [TestMethod]
+        public void test_Set_and_Persist()
+        {
+            _manager.Set("persistentkey", "abcde", 90);
+            _manager.Persist("persistentkey");
+            int timetolive = _manager.TTL("persistentkey");
+            Assert.IsTrue(timetolive == -1);
         }
 
         //[TestMethod]
@@ -41,19 +66,12 @@ namespace redis_com_client_test
         //    Assert.IsNull(_manager.Get("expired"));
         //}
 
-        [TestMethod]
-        public void CheckTTL()
-        {
-            _manager.Add("dk", "123");
-            _manager.Expire("dk", 10);
-            int timetolive = _manager.TTL("dk");
-            Assert.IsTrue(timetolive >= 5 && timetolive <= 10);
-        }
+
 
         [TestMethod]
         public void GetByObject()
         {
-            _manager.Add("dk", "123");
+            _manager.SetPermanent("dk", "123");
             Assert.AreEqual("123", _manager["dk"]);
         }
 
@@ -103,11 +121,11 @@ namespace redis_com_client_test
         public void RemoveAllFromThisKey()
         {
             var manager2 = new CacheManager(hostname: "localhost");
-            manager2.Add("myPrefix2:firstname", "22222");
-            manager2.Add("myPrefix2:lastname", "33333");
+            manager2.SetPermanent("myPrefix2:firstname", "22222");
+            manager2.SetPermanent("myPrefix2:lastname", "33333");
 
-            _manager.Add("myPrefix:firstname", "firstname123");
-            _manager.Add("myPrefix:lastname", "lastname123");
+            _manager.SetPermanent("myPrefix:firstname", "firstname123");
+            _manager.SetPermanent("myPrefix:lastname", "lastname123");
             _manager.RemoveAll("myPrefix:");
 
             Assert.IsNull(_manager["myPrefix:firstname"]);
@@ -119,7 +137,7 @@ namespace redis_com_client_test
         [TestMethod]
         public void Exists()
         {
-            _manager.Add("exists", "12344");
+            _manager.SetPermanent("exists", "12344");
             Assert.IsTrue(_manager.Exists("exists"));
         }
 
@@ -132,7 +150,7 @@ namespace redis_com_client_test
         [TestMethod]
         public void Remove()
         {
-            _manager.Add("onekey", "12344");
+            _manager.SetPermanent("onekey", "12344");
             _manager.Del("onekey");
             Assert.IsFalse(_manager.Exists("onekey"));
         }
@@ -140,7 +158,7 @@ namespace redis_com_client_test
         [TestMethod]
         public void SetExpirationExistingKey()
         {
-            _manager.Add("key4", "12344");
+            _manager.SetPermanent("key4", "12344");
             Assert.IsTrue(_manager.Exists("key4"));
             _manager.SetExpiration("key4",1000);
             Thread.Sleep(2000);
@@ -150,7 +168,7 @@ namespace redis_com_client_test
         [TestMethod]
         public void AddNullValue()
         {
-            _manager.Add("null", null);
+            _manager.SetPermanent("null", null);
             Assert.IsTrue(_manager.Exists("null"));
         }
 
