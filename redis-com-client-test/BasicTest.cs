@@ -54,19 +54,13 @@ namespace redis_com_client_test
             Assert.IsTrue(timetolive == -1);
         }
 
-        //[TestMethod]
-        //public void SetExpiration()
-        //{
-        //    var wait = 5000;
-        //    var expiredValue = DateTime.Now;
-        //    _manager.SetExpiration("expired", expiredValue, wait);
-        //
-        //    Assert.AreEqual(expiredValue.ToString(), _manager.Get("expired"));
-        //    Thread.Sleep(wait + 100);
-        //    Assert.IsNull(_manager.Get("expired"));
-        //}
-
-
+        [TestMethod]
+        public void test_string_type()
+        {
+            _manager.Set("stringkey", "abcde", 10);
+            string valuetype = _manager.Type("stringkey");
+            Assert.IsTrue(valuetype.ToLower() == "string");
+        }
 
         [TestMethod]
         public void GetByObject()
