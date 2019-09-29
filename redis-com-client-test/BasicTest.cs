@@ -63,6 +63,15 @@ namespace redis_com_client_test
         }
 
         [TestMethod]
+        public void test_incr()
+        {
+            _manager.Set("MyNumber", 3, 10);
+            double newValue = _manager.Incr("MyNumber");
+            Assert.IsTrue(newValue == 4);
+            Assert.AreEqual("4", _manager.Get("MyNumber"));
+        }
+
+        [TestMethod]
         public void GetByObject()
         {
             _manager.SetPermanent("dk", "123");
@@ -120,7 +129,7 @@ namespace redis_com_client_test
 
             _manager.SetPermanent("myPrefix:firstname", "firstname123");
             _manager.SetPermanent("myPrefix:lastname", "lastname123");
-            _manager.RemoveAll("myPrefix:");
+            _manager.RemoveKeysWithPrefix("myPrefix:");
 
             Assert.IsNull(_manager["myPrefix:firstname"]);
             Assert.IsNull(_manager["myPrefix:lastname"]);

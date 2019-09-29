@@ -19,23 +19,25 @@ namespace redis_com_client
         void SetPermanent(string key, object value);
         void Persist(string key);
         string Type(string key);
-
+        
+        double Decr(string key);
+        double DecrBy(string key, double decrement);
+        double Incr(string key);
+        double IncrBy(string key, double increment);
+        
+        void Hdel(string key, string field);
+        bool Hexists(string key, string field);
+        object Hget(string key, string field);
+        object Hgetall(string key);
+        long Hlen(string key);
+        bool Hset(string key, string field, string value);
+        
         /*
-        int decr(string key);
-        int decrby(string key, int decrement);
-        int incr(string key);
-        int incrby(string key, int increment);
-
-        void hdel(string key, string field);
-        bool hexists(string key, string field);
-        object hget(string key, string field);
-        object hgetall(string key);
-        int hlen(string key);
-        void hset(string key, string field, object value);
-        String[] hkeys(string key);
-        Object[] hvals(string key);
+        String[] Hkeys(string key);
+        Object[] Hvals(string key);
         */
-        void RemoveAll(string prefix);
+
+        void RemoveKeysWithPrefix(string prefix);
         object this[string key] { get; set; }
 
 

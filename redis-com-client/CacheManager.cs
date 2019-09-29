@@ -117,19 +117,50 @@ namespace redis_com_client
             return _redisinstance.KeyType(key).ToString();
         }
 
+        public double Incr(string key)
+        {
+            return _redisinstance.StringIncrement(key);
+        }
+        public double IncrBy(string key, double increment)
+        {
+            return _redisinstance.StringIncrement(key, increment);
+        }
+        public double Decr(string key)
+        {
+            return _redisinstance.StringDecrement(key);
+        }
+        public double DecrBy(string key, double decrement)
+        {
+            return _redisinstance.StringDecrement(key, decrement);
+        }
 
+        public void Hdel(string key, string field)
+        {
+            _redisinstance.HashDelete(key, field);
+        }
+        public bool Hexists(string key, string field)
+        {
+            return _redisinstance.HashExists(key, field);
+        }
+        public object Hget(string key, string field)
+        {
+            return _redisinstance.HashGet(key, field);
+        }
 
+        public object Hgetall(string key)
+        {
+            return _redisinstance.HashGetAll(key);
+        }
 
+        public long Hlen(string key)
+        {
+            return _redisinstance.HashLength(key);
+        }
 
-
-
-
-
-
-
-
-
-
+        public bool Hset(string key, string field, string value)
+        {
+            return _redisinstance.HashSet(key, field, value);
+        }
 
 
 
@@ -138,7 +169,7 @@ namespace redis_com_client
             _redisinstance.KeyExpire(key, TimeSpan.FromMilliseconds(milliseconds));
         }
 
-        public void RemoveAll(string prefix)
+        public void RemoveKeysWithPrefix(string prefix)
         {
             var mask = $"{prefix}*";
             _redisinstance.ScriptEvaluate("local keys = redis.call('keys', ARGV[1]) for i=1,#keys,5000 do redis.call('del', unpack(keys, i, math.min(i+4999, #keys))) end return keys", null, new RedisValue[] { mask });
