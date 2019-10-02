@@ -17,7 +17,8 @@ namespace redis_com_client_test
         [TestInitialize]
         public void Initialize()
         {
-            _manager = new CacheManager(hostname:"localhost");
+            _manager = new CacheManager();
+            _manager.Open(hostname: "localhost");
         }
 
 
@@ -72,6 +73,15 @@ namespace redis_com_client_test
         }
 
         [TestMethod]
+        public void test_Hset_Hget()
+        {
+            _manager.Hset("testhash", "firstfield", "firstvalue");
+            _manager.Expire("testhash", 60);
+            object result = (string)_manager.Hget("testhash", "firstfield");
+            Assert.AreEqual("firstvalue", result);
+        }
+
+        [TestMethod]
         public void GetByObject()
         {
             _manager.SetPermanent("dk", "123");
@@ -123,7 +133,8 @@ namespace redis_com_client_test
         [TestMethod]
         public void RemoveAllFromThisKey()
         {
-            var manager2 = new CacheManager(hostname: "localhost");
+            var manager2 = new CacheManager();
+            manager2.Open(hostname: "localhost");
             manager2.SetPermanent("myPrefix2:firstname", "22222");
             manager2.SetPermanent("myPrefix2:lastname", "33333");
 

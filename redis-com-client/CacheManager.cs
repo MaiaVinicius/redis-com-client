@@ -14,8 +14,10 @@ namespace redis_com_client
     public class CacheManager : ICacheManager
     {
         private IDatabase _redisinstance;
+        // TODO: configure hostname and port externally in the COM client
+        public CacheManager() { }
 
-        public CacheManager(string hostname)
+        public void Open(string hostname)
         {
             _redisinstance = CacheFactory.GetInstance(hostname);
         }
@@ -144,7 +146,9 @@ namespace redis_com_client
         }
         public object Hget(string key, string field)
         {
-            return _redisinstance.HashGet(key, field);
+            // although redis accepts different types of keys, 
+            // in the COM interop we only use a string type
+            return (string)_redisinstance.HashGet(key, field);
         }
 
         public object Hgetall(string key)

@@ -8,6 +8,8 @@ namespace redis_com_client
     [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
     public interface ICacheManager
     {
+        void Open(string hostname);
+
         void Del(string key);
         bool Exists(string key);
         void ExpireAt(string key, DateTime ExpireDatetime);
