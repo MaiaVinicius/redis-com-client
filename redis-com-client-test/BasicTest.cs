@@ -18,7 +18,7 @@ namespace redis_com_client_test
         public void Initialize()
         {
             _manager = new CacheManager();
-            _manager.Open(hostname: "localhost");
+            _manager.Open("localhost");
         }
 
 
@@ -134,7 +134,7 @@ namespace redis_com_client_test
         public void RemoveAllFromThisKey()
         {
             var manager2 = new CacheManager();
-            manager2.Open(hostname: "localhost");
+            manager2.Open("localhost");
             manager2.SetPermanent("myPrefix2:firstname", "22222");
             manager2.SetPermanent("myPrefix2:lastname", "33333");
 

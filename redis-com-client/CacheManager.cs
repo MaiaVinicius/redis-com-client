@@ -17,9 +17,9 @@ namespace redis_com_client
         // TODO: configure hostname and port externally in the COM client
         public CacheManager() { }
 
-        public void Open(string hostname)
+        public void Open(string configuration)
         {
-            _redisinstance = CacheFactory.GetInstance(hostname);
+            _redisinstance = CacheFactory.GetInstance(configuration:configuration);
         }
 
         public void Del(string key)
