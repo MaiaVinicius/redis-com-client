@@ -142,15 +142,15 @@ If you prefix the name of a set of keys with the same string, for example "CACHE
 
 `object this(string key) `
 
-This is a shortcut for `SetPermanent(string key, object value)` and `Get(string key)` . For example:
+This is a shortcut for _SetPermanent(string key, object value)_ and _Get(string key)_ . For example:
 
-Instead of writing: `Redis.SetPermanent("mykey", "myvalue")`
+Instead of writing: _Redis.SetPermanent("mykey", "myvalue")_
 
-you can write: `Redis("mykey") = "myvalue"`
+you can write: _Redis("mykey") = "myvalue"_
 
-In the same way `Redis.Get("mykey")`
+In the same way _Redis.Get("mykey")_
 
-can be written as `Redis("mykey")`
+can be written as _Redis("mykey")_
 
 `SetExpiration(string key, int milliseconds)`
 
