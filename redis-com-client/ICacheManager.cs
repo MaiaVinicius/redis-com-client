@@ -6,7 +6,7 @@ namespace redis_com_client
     [ComVisible(true)]
     [Guid("c8109c73-2528-4e90-a999-81abd1fc7a70")]
     [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
-    public interface ICacheManager
+    public interface IRedisClient
     {
         void Open(string hostname);
 

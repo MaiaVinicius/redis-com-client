@@ -12,12 +12,12 @@ namespace redis_com_client_test
     public class BasicTest
     {
 
-        private CacheManager _manager;
+        private RedisClient _manager;
 
         [TestInitialize]
         public void Initialize()
         {
-            _manager = new CacheManager();
+            _manager = new RedisClient();
             _manager.Open("localhost");
         }
 
@@ -133,7 +133,7 @@ namespace redis_com_client_test
         [TestMethod]
         public void RemoveAllFromThisKey()
         {
-            var manager2 = new CacheManager();
+            var manager2 = new RedisClient();
             manager2.Open("localhost");
             manager2.SetPermanent("myPrefix2:firstname", "22222");
             manager2.SetPermanent("myPrefix2:lastname", "33333");

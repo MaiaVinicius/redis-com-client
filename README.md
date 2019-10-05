@@ -21,7 +21,7 @@ Again, make sure the application pool for your ASP site has rights to the direct
 In ASP the client can be used like this:
 
 ```vb
-Set Redis = Server.CreateObject("CacheManager")
+Set Redis = Server.CreateObject("RedisComClient")
     ' Pass in a configuration to connect to a server
     Redis.Open("localhost")
 
@@ -195,3 +195,5 @@ Licensed under the EUPL - European Union Public License 1.2.
 **`EUPL-1.2`** Copyright (c) 2019 Erik Oosterwaal
 
 This wrapper uses the StackExchange.Redis general purpose Redis client, which is licensed under the MIT License (MIT). More information can be found here: [https://github.com/StackExchange/StackExchange.Redis/blob/master/LICENSE](https://github.com/StackExchange/StackExchange.Redis/blob/master/LICENSE)
+
+

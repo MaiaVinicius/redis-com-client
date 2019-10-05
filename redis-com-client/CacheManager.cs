@@ -7,15 +7,15 @@ using StackExchange.Redis;
 namespace redis_com_client
 {
     [ComVisible(true)]
-    [Guid("6e8c90dd-15b6-4ee9-83c1-f294d6dca2a8")]
+    [Guid("1F9E7FA2-7A55-4540-965C-2DE3DFEA0B09")]
     [ClassInterface(ClassInterfaceType.None)]
-    [ProgId("CacheManager")]
+    [ProgId("RedisComClient")]
     [Synchronization(SynchronizationOption.Disabled)]
-    public class CacheManager : ICacheManager
+    public class RedisClient : IRedisClient
     {
         private IDatabase _redisinstance;
         // TODO: configure hostname and port externally in the COM client
-        public CacheManager() { }
+        public RedisClient() { }
 
         public void Open(string configuration)
         {
