@@ -16,7 +16,7 @@ Make sure the application pool for your ASP site has rights to the directory wit
 
 In ASP the client can be used like this:
 
-```visual-basic
+```vb
 Set Redis = Server.CreateObject("CacheManager")
     ' Pass in a configuration to connect to a server
     Redis.Open("localhost")
@@ -142,15 +142,7 @@ If you prefix the name of a set of keys with the same string, for example "CACHE
 
 `object this(string key) `
 
-This is a shortcut for _SetPermanent(string key, object value)_ and _Get(string key)_ . For example:
-
-Instead of writing: _Redis.SetPermanent("mykey", "myvalue")_
-
-you can write: _Redis("mykey") = "myvalue"_
-
-In the same way _Redis.Get("mykey")_
-
-can be written as _Redis("mykey")_
+This is a shortcut for _SetPermanent(string key, object value)_ and _Get(string key)_ . For example: Instead of writing: _Redis.SetPermanent("mykey", "myvalue")_, you can write: _Redis("mykey") = "myvalue"_. In the same way _Redis.Get("mykey")_, can be written as _Redis("mykey")_.
 
 `SetExpiration(string key, int milliseconds)`
 
@@ -192,11 +184,4 @@ Licensed under the EUPL - European Union Public License 1.2.
 
 **`EUPL-1.2`** Copyright (c) 2019 Erik Oosterwaal
 
-
 This wrapper uses the StackExchange.Redis general purpose Redis client, which is licensed under the MIT License (MIT). More information can be found here: [https://github.com/StackExchange/StackExchange.Redis/blob/master/LICENSE](https://github.com/StackExchange/StackExchange.Redis/blob/master/LICENSE)
-
-
-
-
-
-
