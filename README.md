@@ -10,11 +10,13 @@ This fork was made to support more Redis commands, and to continue the developme
 
 ### Installation
 
+You can either compile the redis-com-client dll yourself using Visual Studio, or use the precompiled dll and its dependencies, found in the `Precompiled DLLs` folder.
+
 Copy the dll and its dependencies to a directory somewhere the application pool of your classic ASP application has rights. Then register the main redis-com-client.dll. The COM+ dll is 64 bit, so it requires the 64-bit regasm.exe to install.
 
 `%SystemRoot%\Microsoft.NET\Framework64\v4.0.30319\regasm redis-com-client.dll /tlb:redis-com-client.tlb /codebase`
 
-Again, make sure the application pool for your ASP site has rights to the directory that contains the dll.
+Again, make sure the application pool for your ASP site has rights to the directory that contains the dll, and that the depedencies are next to the redis-com-client.dll.
 
 ### Usage
 
