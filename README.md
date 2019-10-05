@@ -1,16 +1,20 @@
 # redis-com-client
 
-This is a fork of redis-com-client by Diego Koga, made to support more Redis commands from a COM+ client like Classic ASP.
+This is a fork of redis-com-client by Diego Koga.
 
-Another improvement is that it's possible to provide a configuration for connecting to different Redis servers across a network, instead of only to localhost. Examples of these configurations can be found here:[https://stackexchange.github.io/StackExchange.Redis/Configuration.html#basic-configuration-strings](https://stackexchange.github.io/StackExchange.Redis/Configuration.html#basic-configuration-strings)
+It allows you to connect to a Redis Server from Classic ASP, other COM+ clients should also be able to connect to Redis using the provided DDLs, but that is untested.
+
+Using this software you can use Redis in Classic ASP for caching, session management, or just storing key-value pairs in an efficient, fast way. 
+
+This fork was made to support more Redis commands, and to continue the development of the ASP COM interface for Redis. Another important change is that with this fork it's possible to provide a _configurationstring_ for connecting to different Redis servers across a network, instead of only to localhost. Examples of these configurationstrings can be found here:[https://stackexchange.github.io/StackExchange.Redis/Configuration.html#basic-configuration-strings](https://stackexchange.github.io/StackExchange.Redis/Configuration.html#basic-configuration-strings)
 
 ### Installation
 
-Copy the dll and its dependencies to a directory somewhere the application pool your classic ASP site has rights. Then register the main redis-com-client.dll. The COM+ dll is 64 bit, so it requires the 64-bit regasm.exe to install.
+Copy the dll and its dependencies to a directory somewhere the application pool of your classic ASP application has rights. Then register the main redis-com-client.dll. The COM+ dll is 64 bit, so it requires the 64-bit regasm.exe to install.
 
 `%SystemRoot%\Microsoft.NET\Framework64\v4.0.30319\regasm redis-com-client.dll /tlb:redis-com-client.tlb /codebase`
 
-Make sure the application pool for your ASP site has rights to the directory with the dll.
+Again, make sure the application pool for your ASP site has rights to the directory that contains the dll.
 
 ### Usage
 
@@ -177,6 +181,12 @@ It was not possible to connect to the redis server(s); to create a disconnected 
 ```
 
 You should have a Redis server running on the specified computer. You can run Redis using Windows Subsystem for Linux, by running it on a Linux computer in your network or by finding the Windows Native Redis server online and running it on a Windows computer. 
+
+```
+RegAsm : warning RA0000 : Registering an unsigned assembly with /codebase can cause your assembly to interfere with other applications that may be installed on the same computer. The /codebase switch is intended to be used only with signed assemblies. Please give your assembly a strong name and re-register it.
+```
+
+This error occurs when you register the dll, but it can be safely ignored unless you have more applications installed that use the redis-com-client, but in a different version.
 
 ### License
 
