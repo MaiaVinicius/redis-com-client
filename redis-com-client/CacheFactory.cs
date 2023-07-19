@@ -27,5 +27,10 @@ namespace redis_com_client
 
             return _redisClientsManager.GetServer("localhost", 6379);
         }
+
+        public static void Close(bool allowCommandsToComplete = true)
+        {
+            _redisClientsManager.Close(allowCommandsToComplete);
+        }
     }
 }
