@@ -22,6 +22,11 @@ namespace redis_com_client
             _redisinstance = CacheFactory.GetInstance(configuration:configuration);
         }
 
+        public void Close(bool allowCommandsToComplete = true)
+        {
+            CacheFactory.Close(allowCommandsToComplete);
+        }
+
         public void Del(string key)
         {
             _redisinstance.KeyDelete(key);
